@@ -12,15 +12,14 @@ namespace PagosCondominio
         List<Propietario> propietarios = new List<Propietario>();
         List<Propiedad> propiedades = new List<Propiedad>();
         List<Datos> datos = new List<Datos>();
-        //List<Datos> datosKing = new List<Datos>();
+        // Variables globales
+        int contador; int indice; float cuotaTotal;
         // Funciones propias
         private void GuardarDatos()
         {
             FileStream stream = new FileStream("Datos.txt", FileMode.OpenOrCreate, FileAccess.Write);
-
             StreamWriter writer = new StreamWriter(stream);
 
-            // Variable "var" es capaz de almacenar cualquier tipo de dato
             foreach (var p in datos)
             {
                 writer.WriteLine(p.Nombre);
@@ -89,12 +88,18 @@ namespace PagosCondominio
         }
         private void General()
         {
-            for(int x = 0; x < propietarios.Count;x++)
+            int contadorTemp = 0; int i = 0;
+            float cuotaTotalTemp = 0;
+            for (int x = 0; x < propietarios.Count; x++)
             {
-                for(int y = 0; y < propiedades.Count;y++)
+                contador = 0; cuotaTotal = 0; 
+                for (int y = 0; y < propiedades.Count; y++)
                 {
-                    if(propietarios[x].Dpi.Contains(propiedades[y].Dpi))
+                    if (propietarios[x].Dpi.Contains(propiedades[y].Dpi))
                     {
+                        contador++;
+                        indice = x;
+                        cuotaTotal += propiedades[y].Cuota; 
                         // Si se cumple la condición es porque la propiedad le pertenece
                         // a la persona.
                         Datos datosTemp = new Datos();
@@ -105,11 +110,31 @@ namespace PagosCondominio
                         datosTemp.Cuota = propiedades[y].Cuota;
 
                         datos.Add(datosTemp);
-                        //datosKing.Add(datosTemp);
                         GuardarDatos();
                     }
                 }
+                // Comprobar quien tiene más propiedades
+                if (contador > contadorTemp)
+                {
+                    contadorTemp = contador;
+                    i = indice;
+                }
+                if(cuotaTotal > cuotaTotalTemp)
+                {
+                    cuotaTotalTemp = cuotaTotal;
+                    i = indice;
+                }
             }
+            // Mostrar al propietario con más propiedades
+            label5.Text = propietarios[i].Dpi;
+            label7.Text = contadorTemp.ToString();
+            label15.Text = propietarios[i].Nombre; ;
+            label13.Text = propietarios[i].Apellido;
+            // Mostrar el propietario con la cuota total mayor
+            label11.Text = propietarios[i].Dpi;
+            label9.Text = cuotaTotalTemp.ToString();
+            label33.Text = propietarios[i].Nombre; ;
+            label31.Text = propietarios[i].Apellido;
         }
         private void OrdenarCuota()
         {
@@ -118,6 +143,20 @@ namespace PagosCondominio
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = d;
             dataGridView1.Refresh();
+        }
+        private void CuotasAltas()
+        {
+            List<Datos> d = datos.OrderByDescending(al => al.Cuota).ToList();
+            label19.Text = (d[0].Cuota).ToString();
+            label17.Text = (d[1].Cuota).ToString();
+            label22.Text = (d[2].Cuota).ToString();
+        }
+        private void CuotasBajas()
+        {
+            List<Datos> d = datos.OrderBy(al => al.Cuota).ToList();
+            label28.Text = (d[0].Cuota).ToString();
+            label26.Text = (d[1].Cuota).ToString();
+            label24.Text = (d[2].Cuota).ToString();
         }
         public Form1()
         {
@@ -131,6 +170,8 @@ namespace PagosCondominio
             if(datos.Count > 0)
                 LeerDatos();
             General();
+            CuotasAltas();
+            CuotasBajas();
         }
 
         private void btnMostrar_Click(object sender, EventArgs e)
@@ -143,10 +184,11 @@ namespace PagosCondominio
             {
                 OrdenarCuota();
             }
-            else if (cmbFiltro.SelectedIndex == 2)
-            {
+        }
 
-            }
+        private void label10_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

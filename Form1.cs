@@ -88,7 +88,7 @@ namespace PagosCondominio
         }
         private void General()
         {
-            int contadorTemp = 0; int i = 0;
+            int contadorTemp = 0; int i = 0; int i2 = 0;
             float cuotaTotalTemp = 0;
             for (int x = 0; x < propietarios.Count; x++)
             {
@@ -122,7 +122,7 @@ namespace PagosCondominio
                 if(cuotaTotal > cuotaTotalTemp)
                 {
                     cuotaTotalTemp = cuotaTotal;
-                    i = indice;
+                    i2 = indice;
                 }
             }
             // Mostrar al propietario con más propiedades
@@ -131,10 +131,10 @@ namespace PagosCondominio
             label15.Text = propietarios[i].Nombre; ;
             label13.Text = propietarios[i].Apellido;
             // Mostrar el propietario con la cuota total mayor
-            label11.Text = propietarios[i].Dpi;
+            label11.Text = propietarios[i2].Dpi;
             label9.Text = cuotaTotalTemp.ToString();
-            label33.Text = propietarios[i].Nombre; ;
-            label31.Text = propietarios[i].Apellido;
+            label33.Text = propietarios[i2].Nombre; ;
+            label31.Text = propietarios[i2].Apellido;
         }
         private void OrdenarCuota()
         {

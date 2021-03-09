@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PagosCondominio
@@ -11,6 +12,7 @@ namespace PagosCondominio
         List<Propietario> propietarios = new List<Propietario>();
         List<Propiedad> propiedades = new List<Propiedad>();
         List<Datos> datos = new List<Datos>();
+        //List<Datos> datosKing = new List<Datos>();
         // Funciones propias
         private void GuardarDatos()
         {
@@ -61,6 +63,23 @@ namespace PagosCondominio
             }
             reader.Close();
         }
+        private void LeerDatos()
+        {
+            FileStream stream = new FileStream("Datos.txt", FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+
+            while (reader.Peek() > -1)
+            {
+                Datos datosTemp = new Datos();
+                datosTemp.Nombre = reader.ReadLine();
+                datosTemp.Apellido = reader.ReadLine();
+                datosTemp.NumCasa = Convert.ToInt32(reader.ReadLine());
+                datosTemp.Cuota = float.Parse(reader.ReadLine());
+
+                datos.Add(datosTemp);
+            }
+            reader.Close();
+        }
         //
         private void Mostrar()
         {
@@ -86,10 +105,19 @@ namespace PagosCondominio
                         datosTemp.Cuota = propiedades[y].Cuota;
 
                         datos.Add(datosTemp);
-                        GuardarDatos(); // Almacenar en el archivo de texto
+                        //datosKing.Add(datosTemp);
+                        GuardarDatos();
                     }
                 }
             }
+        }
+        private void OrdenarCuota()
+        {
+            List <Datos> d = datos.OrderBy(al => al.Cuota).ToList();
+            // Mostrar datos ordenados
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = d;
+            dataGridView1.Refresh();
         }
         public Form1()
         {
@@ -100,19 +128,24 @@ namespace PagosCondominio
         {
             LeerPropietarios();
             LeerPropiedades();
+            if(datos.Count > 0)
+                LeerDatos();
+            General();
         }
 
         private void btnMostrar_Click(object sender, EventArgs e)
         {
-            if(cmbFiltro.SelectedIndex == 0)
+            if (cmbFiltro.SelectedIndex == 0)
             {
-                General();
-                Mostrar();
+                Mostrar();               
             }
             else if (cmbFiltro.SelectedIndex == 1)
             {
+                OrdenarCuota();
+            }
+            else if (cmbFiltro.SelectedIndex == 2)
+            {
 
-                Mostrar();
             }
         }
     }

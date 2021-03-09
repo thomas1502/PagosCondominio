@@ -17,5 +17,10 @@ namespace PagosCondominio
         public string Apellido { get => apellido; set => apellido = value; }
         public int NumCasa { get => numCasa; set => numCasa = value; }
         public float Cuota { get => cuota; set => cuota = value; }
+
+        internal object Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
